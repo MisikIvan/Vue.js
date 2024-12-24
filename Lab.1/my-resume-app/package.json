@@ -1,0 +1,29 @@
+{
+  "name": "my-resume-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "serve": "vite preview"
+    },
+  
+  "dependencies": {
+    "@headlessui/vue": "^1.7.23",
+    "@tailwindcss/forms": "^0.5.9",
+    "@unhead/vue": "^1.11.14",
+    "@vueuse/core": "^12.2.0",
+    "vee-validate": "^4.15.0",
+    "vue": "^3.5.13",
+    "vue-recaptcha": "^3.0.0-alpha.6",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.0.5"
+  }
+}
