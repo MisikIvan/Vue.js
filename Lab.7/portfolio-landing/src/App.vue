@@ -1,32 +1,25 @@
 <template>
-  <div id="app" class="flex flex-col min-h-screen">
-
-    <Navbar />
-
- 
-    <router-view />
-    <Footer />
-  </div>
+  <HeroSection />
+  <AboutSection />
+  <SkillsSection />
+  <EducationSection />
+  <ProjectsSection />
 </template>
 
 <script>
-import Navbar from './components/Navbar.vue';
-import Footer from './components/Footer.vue';
+import HeroSection from './components/HeroSection.vue';
+import AboutSection from './components/AboutSection.vue';
+import SkillsSection from './components/SkillsSection.vue';
+import EducationSection from './components/EducationSection.vue';
+import ProjectsSection from './components/ProjectsSection.vue';
 
 export default {
   components: {
-    Navbar,
-    Footer,
+    HeroSection,
+    AboutSection,
+    SkillsSection,
+    EducationSection,
+    ProjectsSection,
   },
 };
 </script>
-
-<style>
-
-#app {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100vh;
-}
-</style>
