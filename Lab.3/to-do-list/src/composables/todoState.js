@@ -1,11 +1,9 @@
 import { ref } from "vue";
 
 export function useTodoState() {
-  // Стан активних і завершених завдань
   const tasks = ref([]);
   const archivedTasks = ref([]);
 
-  // Функція для додавання нового завдання
   const addTask = (newTask) => {
     const task = {
       id: Date.now(),
@@ -21,7 +19,6 @@ export function useTodoState() {
     tasks.value.push(task);
   };
 
-  // Функція для редагування завдання
   const editTask = (taskId, updatedTask) => {
     const taskIndex = tasks.value.findIndex((task) => task.id === taskId);
     if (taskIndex !== -1) {
@@ -29,7 +26,7 @@ export function useTodoState() {
     }
   };
 
-  // Функція для видалення завдання
+  
   const deleteTask = (taskId) => {
     tasks.value = tasks.value.filter((task) => task.id !== taskId);
     archivedTasks.value = archivedTasks.value.filter(
@@ -37,7 +34,7 @@ export function useTodoState() {
     );
   };
 
-  // Функція для позначення завдання як завершеного
+
   const completeTask = (taskId) => {
     const taskIndex = tasks.value.findIndex((task) => task.id === taskId);
     if (taskIndex !== -1) {
@@ -48,7 +45,6 @@ export function useTodoState() {
     }
   };
 
-  // Функція для повернення завдання до активного списку
   const restoreTask = (taskId) => {
     const taskIndex = archivedTasks.value.findIndex(
       (task) => task.id === taskId

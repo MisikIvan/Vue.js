@@ -1,75 +1,124 @@
 <template>
-    <div class="task-card p-6 bg-light-gray border border-gray-300 rounded-lg shadow-sm hover:shadow-lg transition">
-        <slot name="title">
-            <h3 class="task-title text-xl font-semibold text-dark-gray">{{ task.title }}</h3>
-        </slot>
-        
-        <p class="task-description text-gray-600">{{ task.description }}</p>
-        <p class="task-priority text-sm text-gray-500">Пріоритет: {{ task.priority }}</p>
-        <p class="task-tags text-sm text-gray-500">Теги: {{ task.tags.join(', ') }}</p>
-        <p class="task-deadline text-sm text-gray-500">
-            Дедлайн: {{ task.deadline ? new Date(task.deadline).toLocaleDateString() : 'Не встановлено' }}
-        </p>
-        <p class="task-created text-sm text-gray-500">Дата створення: {{ new Date(task.createdAt).toLocaleDateString() }}</p>
-        
-        <p v-if="task.status === 'completed'" class="task-completion-date text-sm text-gray-500">
-            Дата завершення: {{ new Date(task.completedAt).toLocaleDateString() }}
-        </p>
-
-        <slot name="actions">
-            <div class="task-actions mt-4 space-x-3">
-                <button @click="onEdit" class="action-button px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                    Редагувати
-                </button>
-                <button @click="onDelete" class="action-button px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
-                    Видалити
-                </button>
-                <button v-if="task.status !== 'completed'" @click="onComplete" 
-                    class="action-button px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
-                    Завершити
-                </button>
+    <div class="todo-form p-6 bg-gray-50 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+            {{ task ? 'Редагувати завдання' : 'Додати нове завдання' }}
+        </h2>
+        <form @submit.prevent="submitForm" class="space-y-4">
+            <div>
+                <label for="title" class="block text-gray-700 font-medium mb-1">Назва:</label>
+                <input type="text" id="title" v-model="localTask.title" ref="formFields" required
+                    class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500" />
             </div>
-        </slot>
+
+            <div>
+                <label for="description" class="block text-gray-700 font-medium mb-1">Опис:</label>
+                <textarea id="description" v-model="localTask.description" ref="formFields"
+                    class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500"></textarea>
+            </div>
+
+            <div>
+                <label for="priority" class="block text-gray-700 font-medium mb-1">Пріоритет:</label>
+                <select id="priority" v-model="localTask.priority" ref="formFields"
+                    class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500">
+                    <option>низький</option>
+                    <option>середній</option>
+                    <option>високий</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="tags" class="block text-gray-700 font-medium mb-1">Теги (через кому):</label>
+                <input type="text" id="tags" v-model="localTask.tags" ref="formFields"
+                    placeholder="Наприклад, важливе, навчання"
+                    class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500" />
+            </div>
+
+            <div>
+                <label for="deadline" class="block text-gray-700 font-medium mb-1">Дедлайн:</label>
+                <input type="date" id="deadline" v-model="localTask.deadline" ref="formFields"
+                    class="w-full border border-gray-300 p-2 rounded-md focus:outline-none focus:border-blue-500" />
+            </div>
+
+            <button type="submit"
+                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-900 transition duration-300">
+                {{ task ? 'Зберегти' : 'Додати завдання' }}
+            </button>
+        </form>
     </div>
 </template>
 
 <script>
+import { ref, watch, onMounted } from 'vue';
+
 export default {
-    name: 'TaskItem',
+    name: 'TodoForm',
     props: {
         task: Object,
-        onEdit: Function,
-        onDelete: Function,
-        onComplete: Function,
+    },
+    emits: ['add-task', 'save-task'],
+    setup(props, { emit }) {
+        const localTask = ref({
+            title: '',
+            description: '',
+            priority: 'середній',
+            tags: '',
+            deadline: null,
+        });
+
+        const formFields = ref([]);
+
+        const focusFirstInput = () => {
+            if (formFields.value.length > 0 && formFields.value[0]) {
+                formFields.value[0].focus();
+            }
+        };
+
+        onMounted(() => {
+            focusFirstInput();
+        });
+
+        watch(() => props.task, (newTask) => {
+            if (newTask) {
+                localTask.value = {
+                    ...newTask,
+                    tags: newTask.tags ? newTask.tags.join(', ') : '',
+                    deadline: newTask.deadline
+                        ? new Date(newTask.deadline).toISOString().split('T')[0]
+                        : null,
+                };
+            }
+            focusFirstInput();
+        }, { immediate: true });
+
+        const submitForm = () => {
+            const taskData = {
+                ...localTask.value,
+                tags: localTask.value.tags.split(',').map(tag => tag.trim()),
+                deadline: localTask.value.deadline ? new Date(localTask.value.deadline) : null,
+            };
+
+            if (props.task) {
+                emit('save-task', taskData);
+            } else {
+                emit('add-task', taskData);
+            }
+
+            localTask.value = {
+                title: '',
+                description: '',
+                priority: 'середній',
+                tags: '',
+                deadline: null,
+            };
+            focusFirstInput();
+        };
+
+        return {
+            localTask,
+            submitForm,
+            formFields,
+            focusFirstInput,
+        };
     },
 };
 </script>
-
-<style scoped>
-.task-card {
-    background-color: #fafafa;
-}
-
-.task-title {
-    color: #333;
-}
-
-.task-description,
-.task-priority,
-.task-tags,
-.task-deadline,
-.task-created,
-.task-completion-date {
-    margin-bottom: 8px;
-}
-
-.task-actions .action-button {
-    transition: all 0.3s ease;
-    border-radius: 0.375rem;
-    padding: 0.5rem 1rem;
-}
-
-.task-actions .action-button:hover {
-    opacity: 0.9;
-}
-</style>

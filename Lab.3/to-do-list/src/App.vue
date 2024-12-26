@@ -3,13 +3,14 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-6">To-Do List</h1>
     <TodoForm v-if="editingTask" :task="editingTask" @save-task="saveTask" />
     <TodoForm v-else @add-task="addTask" />
+
     <div class="view-toggle flex justify-center space-x-4 mb-6">
       <button @click="showActive = true"
-        class="w-40 mt-2 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition focus:outline-none">Активні
+        class="w-40 mt-2 px-6 py-3 bg-gray-300 text-white font-medium rounded-lg hover:bg-gray-800 transition focus:outline-none">Активні
         завдання
       </button>
       <button @click="showActive = false"
-        class="w-40 mt-2 px-6 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition focus:outline-none">Завершені
+        class="w-40 mt-2 px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-600 transition focus:outline-none">Завершені
         завдання
       </button>
     </div>
@@ -24,6 +25,7 @@ import { provide, ref, defineAsyncComponent } from 'vue';
 import { useTodoState } from './composables/todoState';
 import TodoForm from './components/TodoForm.vue';
 import TodoList from './components/TodoList.vue';
+
 const ArchivedList = defineAsyncComponent(() =>
   import('./components/ArchivedList.vue')
 );
