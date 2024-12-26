@@ -3,12 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-    "scripts": {
-      "dev": "vite",
-      "build": "vite build",
-      "serve": "vite preview"
-    },
-  
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
     "@tailwindcss/forms": "^0.5.9",
